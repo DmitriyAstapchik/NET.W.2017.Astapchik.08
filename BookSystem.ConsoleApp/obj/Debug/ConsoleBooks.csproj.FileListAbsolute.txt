@@ -1,0 +1,9 @@
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\ConsoleBooks\bin\Debug\ConsoleBooks.exe.config
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\ConsoleBooks\bin\Debug\ConsoleBooks.exe
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\ConsoleBooks\bin\Debug\ConsoleBooks.pdb
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\ConsoleBooks\bin\Debug\Homework.dll
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\ConsoleBooks\bin\Debug\Homework.pdb
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\ConsoleBooks\obj\Debug\ConsoleBooks.csprojResolveAssemblyReference.cache
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\ConsoleBooks\obj\Debug\ConsoleBooks.csproj.CoreCompileInputs.cache
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\ConsoleBooks\obj\Debug\ConsoleBooks.exe
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\ConsoleBooks\obj\Debug\ConsoleBooks.pdb

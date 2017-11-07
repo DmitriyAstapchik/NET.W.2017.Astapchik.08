@@ -1,0 +1,6 @@
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BankAccountSystem\bin\Debug\BankAccountSystem.dll
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BankAccountSystem\bin\Debug\BankAccountSystem.pdb
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BankAccountSystem\obj\Debug\BankAccountSystem.csprojResolveAssemblyReference.cache
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BankAccountSystem\obj\Debug\BankAccountSystem.csproj.CoreCompileInputs.cache
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BankAccountSystem\obj\Debug\BankAccountSystem.dll
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BankAccountSystem\obj\Debug\BankAccountSystem.pdb
