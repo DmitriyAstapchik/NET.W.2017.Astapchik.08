@@ -4,7 +4,7 @@ using System.Text;
 namespace BookSystem
 {
     /// <summary>
-    /// Class provides a formattable string representation of a book
+    /// Class provides a formatted string representation of a book
     /// </summary>
     public abstract class BookFormatter : ICustomFormatter, IFormatProvider
     {
@@ -12,7 +12,7 @@ namespace BookSystem
         /// Converts a specified book to an equivalent string representation using specified format
         /// </summary>
         /// <param name="format">format specifier</param>
-        /// <param name="arg">formattable object</param>
+        /// <param name="arg">formatted object</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>string representation of a book</returns>
         public string Format(string format, object arg, IFormatProvider formatProvider)
@@ -54,8 +54,10 @@ namespace BookSystem
                         default:
                             throw new FormatException($"Invalid format identifier {ch}");
                     }
+
                     sb.Append(", ");
                 }
+
                 sb.Remove(sb.Length - 2, 2);
 
                 return sb.ToString();

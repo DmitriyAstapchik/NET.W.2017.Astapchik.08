@@ -45,13 +45,13 @@ namespace BookSystem
                 throw new ArgumentException("Price cannot be negative.", "price");
             }
 
-            ISBN = isbn;
-            Author = author;
-            Title = title;
-            Publisher = publisher;
-            PublicationDate = date;
-            Pages = pages;
-            Price = price;
+            this.ISBN = isbn;
+            this.Author = author;
+            this.Title = title;
+            this.Publisher = publisher;
+            this.PublicationDate = date;
+            this.Pages = pages;
+            this.Price = price;
         }
 
         /// <summary>
@@ -96,12 +96,12 @@ namespace BookSystem
         /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            if (obj == null || GetType() != obj.GetType())
+            if (obj == null || this.GetType() != obj.GetType())
             {
                 return false;
             }
 
-            return Equals((Book)obj);
+            return this.Equals((Book)obj);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace BookSystem
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return ISBN.GetHashCode();
+            return this.ISBN.GetHashCode();
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace BookSystem
         /// <returns>true if the specified book's ISBN is equal to the current book's ISBN; otherwise, false</returns>
         public bool Equals(Book other)
         {
-            return other != null && (ReferenceEquals(this, other) || ISBN == other.ISBN);
+            return other != null && (object.ReferenceEquals(this, other) || this.ISBN == other.ISBN);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace BookSystem
         /// <returns>A value that indicates the relative order of the books being compared</returns>
         public int CompareTo(Book other)
         {
-            return other != null ? (Author + Title).CompareTo(other.Author + other.Title) : -1;
+            return other != null ? (this.Author + this.Title).CompareTo(other.Author + other.Title) : -1;
         }
 
         /// <summary>
@@ -158,11 +158,11 @@ namespace BookSystem
         /// <returns>A value that indicates the relative order of the objects being compared.</returns>
         public int CompareTo(object obj)
         {
-            return CompareTo(obj as Book);
+            return this.CompareTo(obj as Book);
         }
 
         /// <summary>
-        /// Provides a formattable string representation of a book
+        /// Provides a formatted string representation of a book
         /// </summary>
         /// <param name="format">format specifier</param>
         /// <param name="formatProvider">format provider</param>
@@ -171,10 +171,10 @@ namespace BookSystem
         {
             if (format == null)
             {
-                return ToString();
+                return this.ToString();
             }
 
-            return Format(format, this, formatProvider ?? this);
+            return this.Format(format, this, formatProvider ?? this);
         }
     }
 }

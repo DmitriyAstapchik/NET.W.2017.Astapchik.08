@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 
 namespace BookSystem
 {
@@ -32,6 +32,14 @@ namespace BookSystem
         {
             bookSet = new HashSet<Book>();
             LoadFromStorage(filePath);
+        }
+
+        /// <summary>
+        /// Represents functionality for books to determine meeting some criteria
+        /// </summary>
+        public interface IBookCriteria
+        {
+            bool IsEligible(Book book);
         }
 
         /// <summary>
@@ -134,14 +142,6 @@ namespace BookSystem
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Represents functionality for books to determine meeting some criteria
-        /// </summary>
-        public interface IBookCriteria
-        {
-            bool IsEligible(Book book);
         }
     }
 }
