@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Globalization;
 
 namespace BankAccountSystem.ConsoleApp
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var filePath = "Accounts";
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-us");
@@ -38,7 +37,7 @@ namespace BankAccountSystem.ConsoleApp
             Console.Read();
         }
 
-        class Generator : IIBANGenerator
+        private class Generator : IIBANGenerator
         {
             public string GenerateIBAN()
             {
