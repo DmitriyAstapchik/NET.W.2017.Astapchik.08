@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Globalization;
+using System.Text;
 
 namespace BookSystem
 {
     /// <summary>
     /// Represents a book with its detailed info, capable of having equality and order relations
     /// </summary>
-    public class Book : IEquatable<Book>, IComparable<Book>
+    public class Book : BookFormatter, IEquatable<Book>, IComparable<Book>, IComparable, IFormattable
     {
         /// <summary>
         /// Constructs a book instance with specified ISBN, author, title, publisher, publication date, pages and price
@@ -18,8 +18,34 @@ namespace BookSystem
         /// <param name="date">book's publication date</param>
         /// <param name="pages">book's number of pages</param>
         /// <param name="price">book's price</param>
+        /// <exception cref="ArgumentException">Argument given is not valid.</exception>
         public Book(string isbn, string author, string title, string publisher, DateTime date, ushort pages, decimal price)
         {
+            if (string.IsNullOrWhiteSpace(isbn))
+            {
+                throw new ArgumentException("The value is not significant.", "isbn");
+            }
+
+            if (string.IsNullOrWhiteSpace(author))
+            {
+                throw new ArgumentException("The value is not significant.", "author");
+            }
+
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                throw new ArgumentException("The value is not significant.", "title");
+            }
+
+            if (string.IsNullOrWhiteSpace(publisher))
+            {
+                throw new ArgumentException("The value is not significant.", "publisher");
+            }
+
+            if (price < 0)
+            {
+                throw new ArgumentException("Price cannot be negative.", "price");
+            }
+
             ISBN = isbn;
             Author = author;
             Title = title;
@@ -97,6 +123,10 @@ namespace BookSystem
             return $"{Title} ({PublicationDate.Year}) by {Author} for {Price.ToString("C")}";
         }
 
+        /// <summary>
+        /// Returns full info string representation of a book instance
+        /// </summary>
+        /// <returns>full book info as a list</returns>
         public string ToLongString()
         {
             return string.Join(Environment.NewLine, $"ISBN: {ISBN}", $"Author: {Author}", $"Title: {Title}", $"Publisher: {Publisher}", $"Publication date: {PublicationDate.ToShortDateString()}", $"Pages: {Pages}", $"Price: {Price.ToString("C")}");
@@ -120,6 +150,27 @@ namespace BookSystem
         public int CompareTo(Book other)
         {
             return other != null ? (Author + Title).CompareTo(other.Author + other.Title) : -1;
+        }
+
+        /// <summary>
+        /// Compares the current instance with another object of the same type.
+        /// </summary>
+        /// <param name="obj">an object to compare with this instance</param>
+        /// <returns>A value that indicates the relative order of the objects being compared.</returns>
+        public int CompareTo(object obj)
+        {
+            return CompareTo(obj as Book);
+        }
+
+        /// <summary>
+        /// Provides a formattable string representation of a book
+        /// </summary>
+        /// <param name="format">format specifier</param>
+        /// <param name="formatProvider">format provider</param>
+        /// <returns>string representation of a book</returns>
+        public string ToString(string format, IFormatProvider formatProvider = null)
+        {
+            return Format(format, this, formatProvider ?? this);
         }
     }
 }
