@@ -1,0 +1,10 @@
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BookSystem.Tests\bin\Debug\BookSystem.Tests.dll
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BookSystem.Tests\bin\Debug\BookSystem.Tests.pdb
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BookSystem.Tests\bin\Debug\BookSystem.dll
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BookSystem.Tests\bin\Debug\nunit.framework.dll
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BookSystem.Tests\bin\Debug\BookSystem.pdb
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BookSystem.Tests\bin\Debug\nunit.framework.xml
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BookSystem.Tests\obj\Debug\BookSystem.Tests.csprojResolveAssemblyReference.cache
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BookSystem.Tests\obj\Debug\BookSystem.Tests.csproj.CoreCompileInputs.cache
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BookSystem.Tests\obj\Debug\BookSystem.Tests.dll
+E:\studying\programming\EPAM training\Homework\Day 8\NET.W.2017.Astapchik.08\BookSystem.Tests\obj\Debug\BookSystem.Tests.pdb
