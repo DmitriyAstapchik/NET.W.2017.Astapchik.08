@@ -28,7 +28,7 @@ namespace BookSystem.ConsoleApp
                 Console.WriteLine(book);
             }
 
-            var book2Fake = new Book(book2.ISBN, "", "", "", DateTime.Today, default(ushort), default(decimal));
+            var book2Fake = new Book(book2.ISBN, "asd", "asd", "asd", DateTime.Today, default(ushort), default(decimal));
             if (Equals(book2, book2Fake) && book2.GetHashCode() == book2Fake.GetHashCode())
             {
                 Console.WriteLine("\n- different book instances with same ISBN are equal and have equal hash codes");
@@ -68,33 +68,33 @@ namespace BookSystem.ConsoleApp
 
             service1.SortBooksByTag(new DateComparer());
             Console.WriteLine("\n- books order after a date sort:");
-            foreach (var book in service1.bookList)
+            foreach (var book in service1.Books)
             {
                 Console.WriteLine(book);
             }
 
             service1.SortBooksByTag(new PriceComparer());
             Console.WriteLine("\n- books order after a price sort:");
-            foreach (var book in service1.bookList)
+            foreach (var book in service1.Books)
             {
                 Console.WriteLine(book);
             }
 
-            service1.SaveToBinary();
+            service1.SaveToStorage("BookListStorage");
             Console.WriteLine("\n- saved to BookListStorage");
 
             var service2 = new BookListService("BookListStorage");
             Console.WriteLine("\n- book list service #2 is created based on BookListStorage:");
-            foreach (var book in service2.bookList)
+            foreach (var book in service2.Books)
             {
                 Console.WriteLine(book);
             }
 
             Console.WriteLine("\n- remove a book by Amy Harmon, save list to the storage and load the storage to the service #1:");
             service2.RemoveBook(service2.FindBookByTag(new AuthorCriteria()));
-            service2.SaveToBinary();
-            service1.LoadFromBinary("BookListStorage");
-            foreach (var book in service1.bookList)
+            service2.SaveToStorage("BookListStorage");
+            service1.LoadFromStorage("BookListStorage");
+            foreach (var book in service1.Books)
             {
                 Console.WriteLine(book);
             }
