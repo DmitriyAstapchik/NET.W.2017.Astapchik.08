@@ -1,16 +1,12 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using NUnit.Framework;
 
 namespace BookSystem.Tests
 {
     [TestFixture, SetCulture("en-us")]
     public class BookTest
     {
-        static Book book = new Book("978-0-7356-6745-7", "Jeffrey Richter", "CLR via C#", "Microsoft Press", DateTime.Parse("2012.1.1"), 826, 59.99m);
+        private static Book book = new Book("978-0-7356-6745-7", "Jeffrey Richter", "CLR via C#", "Microsoft Press", DateTime.Parse("2012.1.1"), 826, 59.99m);
 
         [TestCase("AT", ExpectedResult = "Jeffrey Richter, CLR via C#")]
         [TestCase("ATBY", ExpectedResult = "Jeffrey Richter, CLR via C#, \"Microsoft Press\", 2012")]
