@@ -2,24 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Globalization;
 
 namespace BookSystem
 {
     /// <summary>
     /// Represents a service for working with a book collection
     /// </summary>
-    public class BookListService
+    public class BookListService : IBookStorageService
     {
         /// <summary>
-        /// List of books to work with
+        /// Set of books to work with
         /// </summary>
-        public readonly List<Book> bookList;
-
-        /// <summary>
-        /// Current book list storage path
-        /// </summary>
-        private string storagePath = "BookListStorage";
+        private HashSet<Book> bookSet;
 
         /// <summary>
         /// Constructs a service for working with specified <paramref name="books"/>
@@ -27,48 +21,48 @@ namespace BookSystem
         /// <param name="books"></param>
         public BookListService(ICollection<Book> books)
         {
-            bookList = new List<Book>(books.Where(book => book != null));
+            bookSet = new HashSet<Book>(books.Where(book => book != null));
         }
 
         /// <summary>
-        /// Constructs a service for working with a book list from <paramref name="files"/>
+        /// Constructs a service for working with a book set from <paramref name="filePath"/>
         /// </summary>
-        /// <param name="files">file paths to book list storages</param>
-        public BookListService(params string[] files)
+        /// <param name="filePath">file path to a book set storage</param>
+        public BookListService(string filePath)
         {
-            bookList = new List<Book>();
-            LoadFromBinary(files);
+            bookSet = new HashSet<Book>();
+            LoadFromStorage(filePath);
         }
 
         /// <summary>
-        /// Adds a <paramref name="book"/> to the book list
+        /// Get accessor to a book set
+        /// </summary>
+        public HashSet<Book> Books => bookSet;
+
+        /// <summary>
+        /// Adds a <paramref name="book"/> to the book set
         /// </summary>
         /// <param name="book">a book to add</param>
         /// <exception cref="ArgumentException">the book list already contains specified <paramref name="book"/></exception>
         public void AddBook(Book book)
         {
-            if (bookList.Contains(book))
+            if (!bookSet.Add(book))
             {
                 throw new ArgumentException("The book list already contains a book with given ISBN");
             }
-
-            bookList.Add(book);
         }
 
         /// <summary>
-        /// Removes a <paramref name="book"/> from the book list
+        /// Removes a <paramref name="book"/> from the book set
         /// </summary>
         /// <param name="book">a book to remove</param>
-        /// <returns>true if item is successfully removed; otherwise, false</returns>
         /// <exception cref="ArgumentException">the book list does not contain specified <paramref name="book"/></exception>
-        public bool RemoveBook(Book book)
+        public void RemoveBook(Book book)
         {
-            if (!bookList.Contains(book))
+            if (!bookSet.Remove(book))
             {
                 throw new ArgumentException("The book list does not contain a book with given ISBN");
             }
-
-            return bookList.Remove(book);
         }
 
         /// <summary>
@@ -78,7 +72,7 @@ namespace BookSystem
         /// <returns>the first book that matches the criteria, if found; otherwise, null.</returns>
         public Book FindBookByTag(IBookCriteria criteria)
         {
-            return bookList.Find(book => criteria.IsEligible(book));
+            return bookSet.FirstOrDefault(book => criteria.IsEligible(book));
         }
 
         /// <summary>
@@ -87,22 +81,48 @@ namespace BookSystem
         /// <param name="comparer">comparer used for sort</param>
         public void SortBooksByTag(IComparer<Book> comparer)
         {
-            bookList.Sort(comparer);
+            bookSet = new HashSet<Book>(bookSet.OrderBy(book => book, comparer));
         }
 
         /// <summary>
-        /// Saves the book list to a binary file
+        /// Loads a book set from a binary file
         /// </summary>
-        /// <param name="path">a path to an output file</param>
-        public void SaveToBinary(string path)
+        /// <param name="path">a path to a binary storage file</param>
+        public void LoadFromStorage(string path)
+        {
+            bookSet.Clear();
+
+            using (var stream = new FileStream(path, FileMode.Open))
+            {
+                using (var reader = new BinaryReader(stream))
+                {
+                    while (reader.PeekChar() != -1)
+                    {
+                        var isbn = reader.ReadString();
+                        var author = reader.ReadString();
+                        var title = reader.ReadString();
+                        var publisher = reader.ReadString();
+                        var ticks = reader.ReadInt64();
+                        var pages = reader.ReadUInt16();
+                        var price = reader.ReadDecimal();
+
+                        bookSet.Add(new Book(isbn, author, title, publisher, new DateTime(ticks), pages, price));
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Saves a book set to a binary file
+        /// </summary>
+        /// <param name="path">a path to a binary storage file</param>
+        public void SaveToStorage(string path)
         {
             using (var stream = new FileStream(path, FileMode.Create))
             {
                 using (var writer = new BinaryWriter(stream))
                 {
-                    storagePath = path;
-
-                    foreach (var book in bookList)
+                    foreach (var book in bookSet)
                     {
                         writer.Write(book.ISBN);
                         writer.Write(book.Author);
@@ -111,47 +131,6 @@ namespace BookSystem
                         writer.Write(book.PublicationDate.Ticks);
                         writer.Write(book.Pages);
                         writer.Write(book.Price);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Saves the book list to the last used binary file
-        /// </summary>
-        public void SaveToBinary()
-        {
-            SaveToBinary(storagePath);
-        }
-
-        /// <summary>
-        /// Loads the aggregated book list from binary files
-        /// </summary>
-        /// <param name="paths">file paths to binary files</param>
-        public void LoadFromBinary(params string[] paths)
-        {
-            bookList.Clear();
-
-            foreach (var path in paths)
-            {
-                using (var stream = new FileStream(path, FileMode.Open))
-                {
-                    using (var reader = new BinaryReader(stream))
-                    {
-                        storagePath = path;
-
-                        while (reader.PeekChar() != -1)
-                        {
-                            var isbn = reader.ReadString();
-                            var author = reader.ReadString();
-                            var title = reader.ReadString();
-                            var publisher = reader.ReadString();
-                            var ticks = reader.ReadInt64();
-                            var pages = reader.ReadUInt16();
-                            var price = reader.ReadDecimal();
-
-                            bookList.Add(new Book(isbn, author, title, publisher, new DateTime(ticks), pages, price));
-                        }
                     }
                 }
             }

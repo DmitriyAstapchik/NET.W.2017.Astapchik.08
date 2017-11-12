@@ -170,6 +170,11 @@ namespace BookSystem
         /// <returns>string representation of a book</returns>
         public string ToString(string format, IFormatProvider formatProvider = null)
         {
+            if (format == null)
+            {
+                return ToString();
+            }
+
             return Format(format, this, formatProvider ?? this);
         }
     }
