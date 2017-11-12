@@ -4,9 +4,9 @@ using System.Globalization;
 
 namespace BookSystem.ConsoleApp
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-us");
 
@@ -29,7 +29,7 @@ namespace BookSystem.ConsoleApp
             }
 
             var book2Fake = new Book(book2.ISBN, "asd", "asd", "asd", DateTime.Today, default(ushort), default(decimal));
-            if (Equals(book2, book2Fake) && book2.GetHashCode() == book2Fake.GetHashCode())
+            if (object.Equals(book2, book2Fake) && book2.GetHashCode() == book2Fake.GetHashCode())
             {
                 Console.WriteLine("\n- different book instances with same ISBN are equal and have equal hash codes");
             }
@@ -104,7 +104,7 @@ namespace BookSystem.ConsoleApp
             Console.Read();
         }
 
-        class AuthorCriteria : BookListService.IBookCriteria
+        private class AuthorCriteria : BookListService.IBookCriteria
         {
             public bool IsEligible(Book book)
             {
@@ -112,7 +112,7 @@ namespace BookSystem.ConsoleApp
             }
         }
 
-        class PriceCriteria : BookListService.IBookCriteria
+        private class PriceCriteria : BookListService.IBookCriteria
         {
             public bool IsEligible(Book book)
             {
@@ -120,7 +120,7 @@ namespace BookSystem.ConsoleApp
             }
         }
 
-        class DateComparer : IComparer<Book>
+        private class DateComparer : IComparer<Book>
         {
             public int Compare(Book book1, Book book2)
             {
@@ -128,7 +128,7 @@ namespace BookSystem.ConsoleApp
             }
         }
 
-        class PriceComparer : IComparer<Book>
+        private class PriceComparer : IComparer<Book>
         {
             public int Compare(Book book1, Book book2)
             {
