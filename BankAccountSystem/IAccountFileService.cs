@@ -3,7 +3,7 @@
     /// <summary>
     /// Allows to work with bank accounts from a file directly
     /// </summary>
-    interface IAccountFileService
+    internal interface IAccountFileService
     {
         /// <summary>
         /// Adds an account to a file
@@ -14,16 +14,16 @@
         /// <summary>
         /// Removes an account from a file
         /// </summary>
-        /// <param name="IBAN">IBAN of an account</param>
+        /// <param name="iban">IBAN of an account</param>
         /// <returns>account balance</returns>
-        decimal RemoveAccount(string IBAN);
+        decimal RemoveAccount(string iban);
 
         /// <summary>
         /// Gets an account from a file
         /// </summary>
-        /// <param name="IBAN">IBAN of an account</param>
+        /// <param name="iban">IBAN of an account</param>
         /// <returns>bank account instance</returns>
-        BankAccount ReadAccount(string IBAN);
+        BankAccount ReadAccount(string iban);
 
         /// <summary>
         /// Writes an account to a file

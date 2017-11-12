@@ -13,12 +13,12 @@ namespace BankAccountSystem
         /// <summary>
         /// Minimum amount of deposit.
         /// </summary>
-        private const ushort MIN_DEPOSIT = 50;
+        private const ushort MINDEPOSIT = 50;
 
         /// <summary>
         /// Minimum amount of withdrawal.
         /// </summary>
-        private const ushort MIN_WITHDRAWAL = 10;
+        private const ushort MINWITHDRAWAL = 10;
 
         /// <summary>
         /// A file path to accounts binary file.
@@ -28,7 +28,7 @@ namespace BankAccountSystem
         /// <summary>
         /// Bank's IBAN generator
         /// </summary>
-        private IIBANGenerator IBANGenerator;
+        private IIBANGenerator ibanGenerator;
         #endregion
 
         #region constructors
@@ -39,7 +39,7 @@ namespace BankAccountSystem
         public Bank(string filePath, IIBANGenerator generator)
         {
             accountsFilePath = filePath;
-            IBANGenerator = generator;
+            ibanGenerator = generator;
         }
         #endregion
 
@@ -58,64 +58,65 @@ namespace BankAccountSystem
                 throw new ArgumentException("No significant characters are given.", "holder");
             }
 
-            if (startBalance < MIN_DEPOSIT)
+            if (startBalance < MINDEPOSIT)
             {
-                throw new ArgumentException($"Cannot create a bank account with balance lesser than {MIN_DEPOSIT}");
+                throw new ArgumentException($"Cannot create a bank account with balance lesser than {MINDEPOSIT}");
             }
 
             BankAccount account;
             if (startBalance <= 1000)
             {
-                account = new StandartAccount(IBANGenerator.GenerateIBAN(), holder, startBalance, bonusPoints: 0);
+                account = new StandardAccount(ibanGenerator.GenerateIBAN(), holder, startBalance, bonusPoints: 0);
             }
             else if (startBalance <= 10000)
             {
-                account = new GoldAccount(IBANGenerator.GenerateIBAN(), holder, startBalance, bonusPoints: 5);
+                account = new GoldAccount(ibanGenerator.GenerateIBAN(), holder, startBalance, bonusPoints: 5);
             }
             else
             {
-                account = new PlatinumAccount(IBANGenerator.GenerateIBAN(), holder, startBalance, bonusPoints: 10);
+                account = new PlatinumAccount(ibanGenerator.GenerateIBAN(), holder, startBalance, bonusPoints: 10);
             }
+
             ((IAccountFileService)this).AddAccount(account);
 
             return account.IBAN;
         }
 
         /// <summary>
-        /// Removes an account with specified <paramref name="IBAN"/> from accounts file
+        /// Removes an account with specified <paramref name="iban"/> from accounts file
         /// </summary>
-        /// <param name="IBAN">IBAN of an account to close</param>
+        /// <param name="iban">IBAN of an account to close</param>
         /// <returns>account balance</returns>
-        public decimal CloseAccount(string IBAN)
+        public decimal CloseAccount(string iban)
         {
-            if (string.IsNullOrWhiteSpace(IBAN))
+            if (string.IsNullOrWhiteSpace(iban))
             {
                 throw new ArgumentException("No IBAN is given.", "IBAN");
             }
 
-            return ((IAccountFileService)this).RemoveAccount(IBAN);
+            return ((IAccountFileService)this).RemoveAccount(iban);
         }
 
         /// <summary>
-        /// Makes a deposit of <paramref name="amount"/> to an account with specified <paramref name="IBAN"/>.
+        /// Makes a deposit of <paramref name="amount"/> to an account with specified <paramref name="iban"/>.
         /// </summary>
-        /// <param name="IBAN">IBAN of an account to make deposit</param>
+        /// <param name="iban">IBAN of an account to make deposit</param>
         /// <param name="amount">deposit amount</param>
         /// <returns>new account balance</returns>
         /// <exception cref="ArgumentException">deposit amount is lesser than minimal</exception>
-        public decimal MakeDeposit(string IBAN, decimal amount)
+        public decimal MakeDeposit(string iban, decimal amount)
         {
-            if (string.IsNullOrWhiteSpace(IBAN))
+            if (string.IsNullOrWhiteSpace(iban))
             {
                 throw new ArgumentException("No IBAN is given.", "IBAN");
             }
 
-            if (amount < MIN_DEPOSIT)
+            if (amount < MINDEPOSIT)
             {
-                throw new ArgumentException("Minimum deposit amount is " + MIN_DEPOSIT.ToString("C"));
+                throw new ArgumentException("Minimum deposit amount is " + MINDEPOSIT.ToString("C"));
             }
 
-            var account = ReadFromBinary(IBAN);
+            var account = ReadFromBinary(iban);
             account.Deposit(amount);
             WriteToBinary(account);
 
@@ -123,25 +124,25 @@ namespace BankAccountSystem
         }
 
         /// <summary>
-        /// Makes a withdrawal of <paramref name="amount"/> from an account with specified <paramref name="IBAN"/>
+        /// Makes a withdrawal of <paramref name="amount"/> from an account with specified <paramref name="iban"/>
         /// </summary>
-        /// <param name="IBAN">IBAN of an account to make withdrawal</param>
+        /// <param name="iban">IBAN of an account to make withdrawal</param>
         /// <param name="amount">withdrawal amount</param>
         /// <returns>new account balance</returns>
         /// <exception cref="ArgumentException">withdrawal amount is lesser than minimal</exception>
-        public decimal MakeWithdrawal(string IBAN, decimal amount)
+        public decimal MakeWithdrawal(string iban, decimal amount)
         {
-            if (string.IsNullOrWhiteSpace(IBAN))
+            if (string.IsNullOrWhiteSpace(iban))
             {
                 throw new ArgumentException("No IBAN is given.", "IBAN");
             }
 
-            if (amount < MIN_WITHDRAWAL)
+            if (amount < MINWITHDRAWAL)
             {
-                throw new ArgumentException("Minimum withdrawal amount is " + MIN_WITHDRAWAL.ToString("C"));
+                throw new ArgumentException("Minimum withdrawal amount is " + MINWITHDRAWAL.ToString("C"));
             }
 
-            var account = ReadFromBinary(IBAN);
+            var account = ReadFromBinary(iban);
             account.Withdraw(amount);
             WriteToBinary(account);
 
@@ -154,7 +155,7 @@ namespace BankAccountSystem
         /// <returns>IBAN</returns>
         string IIBANGenerator.GenerateIBAN()
         {
-            return IBANGenerator.GenerateIBAN();
+            return ibanGenerator.GenerateIBAN();
         }
 
         /// <summary>
@@ -169,22 +170,22 @@ namespace BankAccountSystem
         /// <summary>
         /// Removes an account from a file
         /// </summary>
-        /// <param name="IBAN">IBAN of an account to remove</param>
+        /// <param name="iban">IBAN of an account to remove</param>
         /// <param name="balance">account balance</param>
         /// <returns>account balance</returns>
-        decimal IAccountFileService.RemoveAccount(string IBAN)
+        decimal IAccountFileService.RemoveAccount(string iban)
         {
-            return RemoveFromBinary(IBAN);
+            return RemoveFromBinary(iban);
         }
 
         /// <summary>
         /// Gets an account from a file
         /// </summary>
-        /// <param name="IBAN">IBAN of an account</param>
+        /// <param name="iban">IBAN of an account</param>
         /// <returns>bank account instance</returns>
-        BankAccount IAccountFileService.ReadAccount(string IBAN)
+        BankAccount IAccountFileService.ReadAccount(string iban)
         {
-            return ReadFromBinary(IBAN);
+            return ReadFromBinary(iban);
         }
 
         /// <summary>
@@ -207,7 +208,7 @@ namespace BankAccountSystem
                 using (var writer = new BinaryWriter(stream))
                 {
                     writer.Write(account.IBAN);
-                    writer.Write(account.owner);
+                    writer.Write(account.Owner);
                     writer.Write(account.Balance);
                     writer.Write(account.BonusPoints);
                     writer.Write(account.GetType().FullName);
@@ -218,33 +219,29 @@ namespace BankAccountSystem
         /// <summary>
         /// removes an account from binary file
         /// </summary>
-        /// <param name="IBAN">IBAN of an account to remove</param>
+        /// <param name="iban">IBAN of an account to remove</param>
         /// <returns>account balance</returns>
-        private decimal RemoveFromBinary(string IBAN)
+        private decimal RemoveFromBinary(string iban)
         {
             using (var stream = new FileStream(accountsFilePath, FileMode.Open))
             {
                 using (var reader = new BinaryReader(stream))
                 {
-                    while (reader.ReadString() != IBAN)
+                    while (reader.ReadString() != iban)
                     {
                         reader.ReadString();
                         reader.ReadDecimal();
                         reader.ReadSingle();
                         reader.ReadString();
                     }
+
                     var owner = reader.ReadString();
                     var balance = reader.ReadDecimal();
                     reader.ReadSingle();
                     var type = reader.ReadString();
-                    var offset = (IBAN.Length + 1) + (owner.Length + 1) + sizeof(decimal) + sizeof(float) + (type.Length + 1);
-                    //stream.Seek(-offset, SeekOrigin.Current);
+                    var offset = (iban.Length + 1) + (owner.Length + 1) + sizeof(decimal) + sizeof(float) + (type.Length + 1);
                     byte[] array = new byte[stream.Length - stream.Position];
                     stream.Read(array, 0, array.Length);
-                    //reader.ReadSingle();
-                    //var type = reader.ReadString();
-                    //reader.BaseStream.Position -= (IBAN.Length + 1) + (owner.Length + 1) + sizeof(decimal) + sizeof(float) + (type.Length + 1);
-                    //reader.BaseStream.SetLength(reader.BaseStream.Position);
                     using (var writer = new BinaryWriter(stream))
                     {
                         writer.Seek(-(array.Length + offset), SeekOrigin.Current);
@@ -260,9 +257,9 @@ namespace BankAccountSystem
         /// <summary>
         /// Gets an account with specified IBAN from a binary file
         /// </summary>
-        /// <param name="IBAN">IBAN to find</param>
+        /// <param name="iban">IBAN to find</param>
         /// <returns>bank account instance</returns>
-        private BankAccount ReadFromBinary(string IBAN)
+        private BankAccount ReadFromBinary(string iban)
         {
             BankAccount account;
 
@@ -270,7 +267,7 @@ namespace BankAccountSystem
             {
                 using (var reader = new BinaryReader(stream))
                 {
-                    while (reader.ReadString() != IBAN)
+                    while (reader.ReadString() != iban)
                     {
                         reader.ReadString();
                         reader.ReadDecimal();
@@ -282,7 +279,7 @@ namespace BankAccountSystem
                     var balance = reader.ReadDecimal();
                     var bonus = reader.ReadSingle();
                     var type = reader.ReadString();
-                    account = (BankAccount)Type.GetType(type).GetConstructors(BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.NonPublic)[0].Invoke(new object[] { IBAN, owner, balance, bonus });
+                    account = (BankAccount)Type.GetType(type).GetConstructors(BindingFlags.CreateInstance | BindingFlags.Instance | BindingFlags.NonPublic)[0].Invoke(new object[] { iban, owner, balance, bonus });
                 }
             }
 
@@ -309,7 +306,7 @@ namespace BankAccountSystem
 
                     using (var writer = new BinaryWriter(stream))
                     {
-                        writer.Write(account.owner);
+                        writer.Write(account.Owner);
                         writer.Write(account.Balance);
                         writer.Write(account.BonusPoints);
                         writer.Write(account.GetType().FullName);

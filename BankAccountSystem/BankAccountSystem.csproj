@@ -42,11 +42,14 @@
   <ItemGroup>
     <Compile Include="Bank.cs" />
     <Compile Include="BankAccount.cs" />
+    <Compile Include="GoldAccount.cs" />
     <Compile Include="IAccountFileService.cs" />
     <Compile Include="IAccountService.cs" />
     <Compile Include="IBonusPointsCalculator.cs" />
     <Compile Include="IIBANGenerator.cs" />
+    <Compile Include="PlatinumAccount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StandardAccount.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

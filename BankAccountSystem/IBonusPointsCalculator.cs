@@ -3,7 +3,7 @@
     /// <summary>
     /// Calculates bonus points for deposit/withdrawal
     /// </summary>
-    interface IBonusPointsCalculator
+    internal interface IBonusPointsCalculator
     {
         /// <summary>
         /// calculates deposit bonus points
