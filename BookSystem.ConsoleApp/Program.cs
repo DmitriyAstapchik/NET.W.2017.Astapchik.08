@@ -80,10 +80,12 @@ namespace BookSystem.ConsoleApp
                 Console.WriteLine(book);
             }
 
-            service1.SaveToStorage("BookListStorage");
+            var s = new BinaryStorage("books");
+            service1.Storage = new BinaryStorage("books");
+            service1.Storage.SaveToStorage(service1.Books);
             Console.WriteLine("\n- saved to BookListStorage");
 
-            var service2 = new BookListService("BookListStorage");
+            var service2 = new BookListService(new BinaryStorage("books"));
             Console.WriteLine("\n- book list service #2 is created based on BookListStorage:");
             foreach (var book in service2.Books)
             {
@@ -92,8 +94,8 @@ namespace BookSystem.ConsoleApp
 
             Console.WriteLine("\n- remove a book by Amy Harmon, save list to the storage and load the storage to the service #1:");
             service2.RemoveBook(service2.FindBookByTag(new AuthorCriteria()));
-            service2.SaveToStorage("BookListStorage");
-            service1.LoadFromStorage("BookListStorage");
+            service2.Storage.SaveToStorage(service1.Books);
+            service1.Storage.LoadFromStorage();
             foreach (var book in service1.Books)
             {
                 Console.WriteLine(book);
