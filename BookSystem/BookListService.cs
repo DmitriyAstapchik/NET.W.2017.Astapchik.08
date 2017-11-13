@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace BookSystem
@@ -8,7 +7,7 @@ namespace BookSystem
     /// <summary>
     /// Represents a service for working with a book collection
     /// </summary>
-    public class BookListService : IBookStorageService
+    public class BookListService
     {
         /// <summary>
         /// Set of books to work with
@@ -19,19 +18,19 @@ namespace BookSystem
         /// Constructs a service for working with specified <paramref name="books"/>
         /// </summary>
         /// <param name="books"></param>
-        public BookListService(ICollection<Book> books)
+        public BookListService(IEnumerable<Book> books)
         {
             bookSet = new HashSet<Book>(books.Where(book => book != null));
         }
 
         /// <summary>
-        /// Constructs a service for working with a book set from <paramref name="filePath"/>
+        /// Constructs a service for working with a book set from <paramref name="storage"/>
         /// </summary>
-        /// <param name="filePath">file path to a book set storage</param>
-        public BookListService(string filePath)
+        /// <param name="storage">a book set storage</param>
+        public BookListService(IBookListStorage storage)
         {
-            bookSet = new HashSet<Book>();
-            LoadFromStorage(filePath);
+            this.Storage = storage;
+            bookSet = new HashSet<Book>(storage.LoadFromStorage());
         }
 
         /// <summary>
@@ -46,6 +45,11 @@ namespace BookSystem
         /// Get accessor to a book set
         /// </summary>
         public HashSet<Book> Books => bookSet;
+
+        /// <summary>
+        /// book set storage
+        /// </summary>
+        public IBookListStorage Storage { get; set; }
 
         /// <summary>
         /// Adds a <paramref name="book"/> to the book set
@@ -90,58 +94,6 @@ namespace BookSystem
         public void SortBooksByTag(IComparer<Book> comparer)
         {
             bookSet = new HashSet<Book>(bookSet.OrderBy(book => book, comparer));
-        }
-
-        /// <summary>
-        /// Loads a book set from a binary file
-        /// </summary>
-        /// <param name="path">a path to a binary storage file</param>
-        public void LoadFromStorage(string path)
-        {
-            bookSet.Clear();
-
-            using (var stream = new FileStream(path, FileMode.Open))
-            {
-                using (var reader = new BinaryReader(stream))
-                {
-                    while (reader.PeekChar() != -1)
-                    {
-                        var isbn = reader.ReadString();
-                        var author = reader.ReadString();
-                        var title = reader.ReadString();
-                        var publisher = reader.ReadString();
-                        var ticks = reader.ReadInt64();
-                        var pages = reader.ReadUInt16();
-                        var price = reader.ReadDecimal();
-
-                        bookSet.Add(new Book(isbn, author, title, publisher, new DateTime(ticks), pages, price));
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Saves a book set to a binary file
-        /// </summary>
-        /// <param name="path">a path to a binary storage file</param>
-        public void SaveToStorage(string path)
-        {
-            using (var stream = new FileStream(path, FileMode.Create))
-            {
-                using (var writer = new BinaryWriter(stream))
-                {
-                    foreach (var book in bookSet)
-                    {
-                        writer.Write(book.ISBN);
-                        writer.Write(book.Author);
-                        writer.Write(book.Title);
-                        writer.Write(book.Publisher);
-                        writer.Write(book.PublicationDate.Ticks);
-                        writer.Write(book.Pages);
-                        writer.Write(book.Price);
-                    }
-                }
-            }
         }
     }
 }

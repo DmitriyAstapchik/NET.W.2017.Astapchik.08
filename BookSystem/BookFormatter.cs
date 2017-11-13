@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Text;
 
 namespace BookSystem
 {
     /// <summary>
     /// Class provides a formatted string representation of a book
     /// </summary>
-    public abstract class BookFormatter : ICustomFormatter, IFormatProvider
+    public class BookFormatter : ICustomFormatter, IFormatProvider
     {
         /// <summary>
         /// Converts a specified book to an equivalent string representation using specified format
@@ -17,55 +16,22 @@ namespace BookSystem
         /// <returns>string representation of a book</returns>
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
-            if (string.IsNullOrWhiteSpace(format))
-            {
-                throw new ArgumentException("Null or empty format string.");
-            }
-
             if (arg is Book book)
             {
-                var sb = new StringBuilder(format.Length);
-
-                foreach (var ch in format)
+                if (format.ToUpper() == "G")
                 {
-                    switch (char.ToUpper(ch))
-                    {
-                        case 'I':
-                            sb.Append("ISBN 13: " + book.ISBN);
-                            break;
-                        case 'A':
-                            sb.Append(book.Author);
-                            break;
-                        case 'T':
-                            sb.Append(book.Title);
-                            break;
-                        case 'B':
-                            sb.Append('"' + book.Publisher + '"');
-                            break;
-                        case 'Y':
-                            sb.Append(book.PublicationDate.Year);
-                            break;
-                        case 'P':
-                            sb.Append("P. " + book.Pages);
-                            break;
-                        case 'C':
-                            sb.Append(book.Price + "$");
-                            break;
-                        default:
-                            throw new FormatException($"Invalid format identifier {ch}");
-                    }
-
-                    sb.Append(", ");
+                    return book.ToString();
                 }
 
-                sb.Remove(sb.Length - 2, 2);
+                if (format.ToUpper() == "L")
+                {
+                    return book.ToLongString();
+                }
 
-                return sb.ToString();
+                throw new ArgumentException($"Invalid format specifier {format}", nameof(format));
             }
-            else
-            {
-                throw new FormatException("No availiable format for an object.");
-            }
+
+            throw new FormatException("No availiable format for an object.");
         }
 
         /// <summary>
@@ -75,7 +41,7 @@ namespace BookSystem
         /// <returns>This instance if <paramref name="formatType"/> is BookFormatter; otherwise, null.</returns>
         public object GetFormat(Type formatType)
         {
-            return formatType == typeof(BookFormatter) ? this : null;
+            return formatType == typeof(ICustomFormatter) ? this : null;
         }
     }
 }

@@ -5,7 +5,7 @@ namespace BookSystem
     /// <summary>
     /// Represents a book with its detailed info, capable of having equality and order relations
     /// </summary>
-    public class Book : BookFormatter, IEquatable<Book>, IComparable<Book>, IComparable, IFormattable
+    public class Book : IEquatable<Book>, IComparable<Book>, IComparable, IFormattable
     {
         /// <summary>
         /// Constructs a book instance with specified ISBN, author, title, publisher, publication date, pages and price
@@ -167,14 +167,57 @@ namespace BookSystem
         /// <param name="format">format specifier</param>
         /// <param name="formatProvider">format provider</param>
         /// <returns>string representation of a book</returns>
-        public string ToString(string format, IFormatProvider formatProvider = null)
+        public string ToString(string format, IFormatProvider formatProvider)
         {
-            if (format == null)
+            if (string.IsNullOrEmpty(format))
             {
                 return this.ToString();
             }
 
-            return this.Format(format, this, formatProvider ?? this);
+            if (formatProvider == null)
+            {
+                var sb = new System.Text.StringBuilder(format.Length);
+
+                foreach (var ch in format)
+                {
+                    switch (char.ToUpper(ch))
+                    {
+                        case 'I':
+                            sb.Append("ISBN 13: " + ISBN);
+                            break;
+                        case 'A':
+                            sb.Append(Author);
+                            break;
+                        case 'T':
+                            sb.Append(Title);
+                            break;
+                        case 'B':
+                            sb.Append('"' + Publisher + '"');
+                            break;
+                        case 'Y':
+                            sb.Append(PublicationDate.Year);
+                            break;
+                        case 'P':
+                            sb.Append("P. " + Pages);
+                            break;
+                        case 'C':
+                            sb.Append(Price + "$");
+                            break;
+                        default:
+                            throw new FormatException($"Invalid format identifier {ch}");
+                    }
+
+                    sb.Append(", ");
+                }
+
+                sb.Remove(sb.Length - 2, 2);
+
+                return sb.ToString();
+            }
+            else
+            {
+                return string.Format(formatProvider, $"{{0:{format}}}", this);
+            }
         }
     }
 }
