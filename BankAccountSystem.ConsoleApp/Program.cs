@@ -7,10 +7,14 @@ namespace BankAccountSystem.ConsoleApp
     {
         private static void Main(string[] args)
         {
-            var filePath = "Accounts";
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-us");
+            var filePath = "accounts";
+            IAccountStorage storage = new BinaryFileStorage(filePath);
+            storage = new ListStorage();
+            var generator = new IBANGenerator();
+            var calculator = new BonusCalculator();
 
-            var bank1 = new Bank(filePath, new Generator());
+            var bank1 = new Bank(storage, generator, calculator);
             Console.WriteLine("- create a new bank instance");
 
             var iban1 = bank1.OpenNewAccount("name1", 100);
@@ -27,17 +31,19 @@ namespace BankAccountSystem.ConsoleApp
             balance2 = bank1.MakeWithdrawal(iban2, 1000);
             Console.WriteLine($"- make a withdrawal, new balance: {balance2}");
 
-            var bank2 = new Bank(filePath, new Generator());
-            Console.WriteLine("\n- create another bank instance from same file");
+            var bank2 = new Bank(storage, generator, calculator);
+            Console.WriteLine("\n- create another bank instance with the same storage");
 
-            bank2.CloseAccount(iban1);
-            bank2.CloseAccount(iban2);
-            Console.WriteLine($"\n- close all 2 accounts, accounts file size: {new System.IO.FileInfo(filePath).Length} bytes");
+            Console.WriteLine($"- close all 2 accounts");
+            balance1 = bank2.CloseAccount(iban1);
+            Console.WriteLine($"- closed balance: {balance1}");
+            balance2 = bank2.CloseAccount(iban2);
+            Console.WriteLine($"- closed balance: {balance2}");
 
             Console.Read();
         }
 
-        private class Generator : IIBANGenerator
+        private class IBANGenerator : IIBANGenerator
         {
             public string GenerateIBAN()
             {
