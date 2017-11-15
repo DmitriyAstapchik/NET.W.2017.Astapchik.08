@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using log4net.Config;
 
 namespace BookSystem.ConsoleApp
 {
@@ -9,6 +10,9 @@ namespace BookSystem.ConsoleApp
         private static void Main(string[] args)
         {
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-us");
+            XmlConfigurator.Configure();
+            var log4netLogger = log4net.LogManager.GetLogger("booklogger");
+            var nlogLogger = NLog.LogManager.GetLogger("bookNLog");
 
             var book1 = new Book("978-1533134134", "Amy Harmon", "The Bird and the Sword", "CreateSpace Independent Publishing Platform", DateTime.Parse("05.06.2016"), 336, 11.89m);
             var book2 = new Book("978-1542046633", "John Marrs", "The Good Samaritan", "Thomas & Mercer", new DateTime(2017, 12, 1), 400, 10.97m);
@@ -28,7 +32,7 @@ namespace BookSystem.ConsoleApp
                 Console.WriteLine(book);
             }
 
-            var book2Fake = new Book(book2.ISBN, "asd", "asd", "asd", DateTime.Today, default(ushort), default(decimal));
+            var book2Fake = new Book(book2.ISBN, "fake", "fake", "fake", DateTime.Today, default(ushort), default(decimal));
             if (object.Equals(book2, book2Fake) && book2.GetHashCode() == book2Fake.GetHashCode())
             {
                 Console.WriteLine("\n- different book instances with same ISBN are equal and have equal hash codes");
@@ -41,22 +45,32 @@ namespace BookSystem.ConsoleApp
             service1.AddBook(book4);
             try
             {
-                Console.WriteLine("\n- trying to add the same book one more time:");
+                var message = "trying to add a book";
+                Console.WriteLine($"\n- {message} one more time:");
+                Logger.Log(text => nlogLogger.Info(text), message);
+                Logger.Log(text => log4netLogger.Info(text), message);
                 service1.AddBook(book4);
             }
-            catch (Exception ex)
+            catch (ApplicationException ex)
             {
+                Logger.Log(text => nlogLogger.Error(text), ex.Message);
+                Logger.Log(text => log4netLogger.Error(text), ex.Message);
                 Console.WriteLine(ex.Message);
             }
 
             service1.RemoveBook(book4);
             try
             {
-                Console.WriteLine("\n- trying to remove the same book one more time:");
+                var message = "trying to remove a book";
+                Console.WriteLine($"\n- {message} one more time:");
+                Logger.Log(text => nlogLogger.Info(text), message);
+                Logger.Log(text => log4netLogger.Info(text), message);
                 service1.RemoveBook(book4);
             }
-            catch (Exception ex)
+            catch (ApplicationException ex)
             {
+                Logger.Log(text => nlogLogger.Error(text), ex.Message);
+                Logger.Log(text => log4netLogger.Error(text), ex.Message);
                 Console.WriteLine(ex.Message);
             }
 
@@ -104,6 +118,14 @@ namespace BookSystem.ConsoleApp
             Console.WriteLine($"\n- book4.ToLongString():\n{book4.ToLongString()}");
 
             Console.Read();
+        }
+
+        private static class Logger
+        {
+            public static void Log(Action<string> log, string message)
+            {
+                log.Invoke(message);
+            }
         }
 
         private class AuthorCriteria : BookListService.IBookCriteria
