@@ -3,9 +3,9 @@
 namespace BankAccountSystem
 {
     /// <summary>
-    /// Represents a bank account with IBAN, owner, balance, bonus points and account type. Allows to make deposits and withdrawals.
+    /// Represents a bank account with IBAN, owner, balance, bonus points and account type
     /// </summary>
-    public abstract class BankAccount : IBonusPointsCalculator
+    public abstract class BankAccount
     {
         #region fields
         /// <summary>
@@ -21,7 +21,7 @@ namespace BankAccountSystem
         /// <summary>
         /// an amount of money that considers effective for a bank
         /// </summary>
-        private const ushort EFFECTIVEAMOUNT = 10000;
+        internal const ushort EFFECTIVEAMOUNT = 10000;
 
         /// <summary>
         /// maximum possible bonus points
@@ -66,8 +66,8 @@ namespace BankAccountSystem
 
             this.IBAN = iban;
             this.Owner = owner;
-            this.balance = balance;
-            this.bonusPoints = bonusPoints;
+            Balance = balance;
+            BonusPoints = bonusPoints;
         }
         #endregion
 
@@ -75,7 +75,7 @@ namespace BankAccountSystem
         /// <summary>
         /// Gets an account balance.
         /// </summary>
-        public decimal Balance => balance;
+        public decimal Balance { get => balance; internal set => balance = value; }
 
         /// <summary>
         /// Gets publicly and sets privately account bonus points using calculation.
@@ -83,18 +83,18 @@ namespace BankAccountSystem
         public float BonusPoints
         {
             get => (float)Math.Round(bonusPoints, 2);
-            private set => bonusPoints = value < 0 ? 0 : value > MAXPOINTS ? MAXPOINTS : value;
+            internal set => bonusPoints = value < 0 ? 0 : value > MAXPOINTS ? MAXPOINTS : value;
         }
 
         /// <summary>
         /// 'value' of a balance
         /// </summary>
-        protected byte BalanceValue { get => BalanceValue; set => BalanceValue = value; }
+        protected internal byte BalanceValue { get; protected set; }
 
         /// <summary>
         /// 'value' of a deposit
         /// </summary>
-        protected byte DepositValue { get => DepositValue; set => DepositValue = value; }
+        protected internal byte DepositValue { get; protected set; }
         #endregion
 
         #region methods
@@ -105,52 +105,6 @@ namespace BankAccountSystem
         public override string ToString()
         {
             return string.Join(Environment.NewLine, $"IBAN: {IBAN}", $"Owner: {Owner}", $"Balance: {Balance.ToString("C")}", $"Bonus points: {BonusPoints}");
-        }
-
-        /// <summary>
-        /// calculates deposit bonus points
-        /// </summary>
-        /// <param name="depositAmount">deposit amount</param>
-        /// <returns>bonus points</returns>
-        float IBonusPointsCalculator.CalculateDepositPoints(decimal depositAmount)
-        {
-            return (float)depositAmount / EFFECTIVEAMOUNT * (BalanceValue + DepositValue);
-        }
-
-        /// <summary>
-        /// calculates withdrawal bonus points
-        /// </summary>
-        /// <param name="withdrawalAmount">withdrawal amount</param>
-        /// <returns>bonus points</returns>
-        float IBonusPointsCalculator.CalculateWithdrawalPoints(decimal withdrawalAmount)
-        {
-            return (float)withdrawalAmount / EFFECTIVEAMOUNT * BalanceValue;
-        }
-
-        /// <summary>
-        /// Makes a deposit of an amount of money.
-        /// </summary>
-        /// <param name="money">an amount of money to deposit</param>
-        protected internal void Deposit(decimal money)
-        {
-            balance += money;
-            BonusPoints += ((IBonusPointsCalculator)this).CalculateDepositPoints(money);
-        }
-
-        /// <summary>
-        /// Makes a withdrawal of an amount of money.
-        /// </summary>
-        /// <param name="money">an amount of money to withdraw</param>
-        /// <exception cref="ArgumentException">account balance is lesser than <paramref name="money"/></exception>
-        protected internal void Withdraw(decimal money)
-        {
-            if (balance < money)
-            {
-                throw new ArgumentException("Account balance is lesser than the requested withdrawal amount");
-            }
-
-            balance -= money;
-            BonusPoints -= ((IBonusPointsCalculator)this).CalculateWithdrawalPoints(money);
         }
         #endregion
     }

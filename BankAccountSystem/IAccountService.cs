@@ -3,7 +3,7 @@
     /// <summary>
     /// Service functionality to work with a bank account
     /// </summary>
-    internal interface IBankAccountService : IIBANGenerator
+    internal interface IAccountService
     {
         /// <summary>
         /// Opens a new bank account
