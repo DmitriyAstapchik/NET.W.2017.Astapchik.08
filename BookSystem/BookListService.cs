@@ -55,12 +55,12 @@ namespace BookSystem
         /// Adds a <paramref name="book"/> to the book set
         /// </summary>
         /// <param name="book">a book to add</param>
-        /// <exception cref="ArgumentException">the book list already contains specified <paramref name="book"/></exception>
+        /// <exception cref="ApplicationException">the book list already contains specified <paramref name="book"/></exception>
         public void AddBook(Book book)
         {
             if (!bookSet.Add(book))
             {
-                throw new ArgumentException("The book list already contains a book with given ISBN");
+                throw new ApplicationException($"The book list already contains a book with ISBN {book.ISBN}.", new ArgumentException("The book is already present in the hashset."));
             }
         }
 
@@ -68,12 +68,12 @@ namespace BookSystem
         /// Removes a <paramref name="book"/> from the book set
         /// </summary>
         /// <param name="book">a book to remove</param>
-        /// <exception cref="ArgumentException">the book list does not contain specified <paramref name="book"/></exception>
+        /// <exception cref="ApplicationException">the book list does not contain specified <paramref name="book"/></exception>
         public void RemoveBook(Book book)
         {
             if (!bookSet.Remove(book))
             {
-                throw new ArgumentException("The book list does not contain a book with given ISBN");
+                throw new ApplicationException($"The book list does not contain a book with ISBN {book.ISBN}.", new ArgumentException("The book is not found in the hashset"));
             }
         }
 
