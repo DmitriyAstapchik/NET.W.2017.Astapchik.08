@@ -11,8 +11,8 @@ namespace BookSystem.ConsoleApp
         {
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-us");
             XmlConfigurator.Configure();
-            var log4netLogger = log4net.LogManager.GetLogger("booklogger");
-            var nlogLogger = NLog.LogManager.GetLogger("bookNLog");
+            var log4netLogger = log4net.LogManager.GetLogger("log4net");
+            var nlogLogger = NLog.LogManager.GetLogger("NLog");
 
             var book1 = new Book("978-1533134134", "Amy Harmon", "The Bird and the Sword", "CreateSpace Independent Publishing Platform", DateTime.Parse("05.06.2016"), 336, 11.89m);
             var book2 = new Book("978-1542046633", "John Marrs", "The Good Samaritan", "Thomas & Mercer", new DateTime(2017, 12, 1), 400, 10.97m);
