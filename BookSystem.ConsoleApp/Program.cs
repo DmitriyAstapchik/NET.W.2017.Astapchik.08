@@ -47,14 +47,14 @@ namespace BookSystem.ConsoleApp
             {
                 var message = "trying to add a book";
                 Console.WriteLine($"\n- {message} one more time:");
-                Logger.Log(text => nlogLogger.Info(text), message);
-                Logger.Log(text => log4netLogger.Info(text), message);
+                BookListService.Log(text => nlogLogger.Info(text), message);
+                BookListService.Log(text => log4netLogger.Info(text), message);
                 service1.AddBook(book4);
             }
             catch (ApplicationException ex)
             {
-                Logger.Log(text => nlogLogger.Error(text), ex.Message);
-                Logger.Log(text => log4netLogger.Error(text), ex.Message);
+                BookListService.Log(text => nlogLogger.Error(text), ex.Message);
+                BookListService.Log(text => log4netLogger.Error(text), ex.Message);
                 Console.WriteLine(ex.Message);
             }
 
@@ -63,14 +63,14 @@ namespace BookSystem.ConsoleApp
             {
                 var message = "trying to remove a book";
                 Console.WriteLine($"\n- {message} one more time:");
-                Logger.Log(text => nlogLogger.Info(text), message);
-                Logger.Log(text => log4netLogger.Info(text), message);
+                BookListService.Log(text => nlogLogger.Info(text), message);
+                BookListService.Log(text => log4netLogger.Info(text), message);
                 service1.RemoveBook(book4);
             }
             catch (ApplicationException ex)
             {
-                Logger.Log(text => nlogLogger.Error(text), ex.Message);
-                Logger.Log(text => log4netLogger.Error(text), ex.Message);
+                BookListService.Log(text => nlogLogger.Error(text), ex.Message);
+                BookListService.Log(text => log4netLogger.Error(text), ex.Message);
                 Console.WriteLine(ex.Message);
             }
 
@@ -118,14 +118,6 @@ namespace BookSystem.ConsoleApp
             Console.WriteLine($"\n- book4.ToLongString():\n{book4.ToLongString()}");
 
             Console.Read();
-        }
-
-        private static class Logger
-        {
-            public static void Log(Action<string> log, string message)
-            {
-                log.Invoke(message);
-            }
         }
 
         private class AuthorCriteria : BookListService.IBookCriteria
