@@ -52,6 +52,16 @@ namespace BookSystem
         public IBookListStorage Storage { get; set; }
 
         /// <summary>
+        /// logs a message
+        /// </summary>
+        /// <param name="log">log method</param>
+        /// <param name="message">log message</param>
+        public static void Log(Action<string> log, string message)
+        {
+            log.Invoke(message);
+        }
+
+        /// <summary>
         /// Adds a <paramref name="book"/> to the book set
         /// </summary>
         /// <param name="book">a book to add</param>
